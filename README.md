@@ -1,14 +1,16 @@
-# RE-PO Project Website
+# RE-PO Project Website (v1.1)
 
-Static project page for **RE-PO: Robust Enhanced Policy Optimization for LLM Alignment**.
+Static GitHub Pages site for **RE-PO: Robust Enhanced Policy Optimization for LLM Alignment**.
 
-## Stack
+## MVP v1.1 Highlights
 
-- Plain static files: `index.html`, `assets/`, `data/`
-- No framework dependency
-- GitHub Pages ready
+- ICLR 2026 badge + author/affiliation strip.
+- Homepage sections: `Hero`, `TL;DR`, `Method`, `Results`, `Resources`, `Citation`.
+- Updated TL;DR terminology: `Research Gap / Method / Performance`.
+- Animated method module with tabbed `Flow` and `Reliability` views.
+- Video-first delivery (`WebM/MP4`) with `GIF` fallback.
 
-## Local Preview
+## Local Development
 
 ```bash
 cd re-po-project-page
@@ -17,26 +19,27 @@ python -m http.server 8000
 # open http://localhost:8000
 ```
 
-## File Layout
+## Animation Asset Generation
 
-- `index.html`
-- `assets/css/site.css`
-- `assets/js/site.js`
-- `assets/img/flow_chart.png`
-- `assets/img/one_annotator_eta.png`
-- `assets/img/two_annotators_eta.png`
-- `assets/paper/iclr2026_conference.pdf`
-- `data/results_main.json`
-- `data/links.json`
-- `data/site_meta.json`
-- `scripts/validate_site.py`
-- `.github/workflows/ci.yml`
+```bash
+cd re-po-project-page
+pip install -r scripts/requirements-anim.txt
+python scripts/generate_method_media.py
+python scripts/validate_site.py
+```
+
+Generated files:
+
+- `assets/media/flow_method.mp4`
+- `assets/media/flow_method.webm`
+- `assets/media/flow_method.gif`
+- `assets/media/reliability_method.mp4`
+- `assets/media/reliability_method.webm`
+- `assets/media/reliability_method.gif`
 
 ## Data Contracts
 
 ### `data/results_main.json`
-
-Each row uses:
 
 - `experiment_id` (string)
 - `dataset` (`ultrafeedback|multipref`)
@@ -54,7 +57,7 @@ Each row uses:
 - `issues_url`
 - `slides_url`
 
-Empty string values are automatically hidden on the page.
+Empty URL values are hidden automatically in the UI.
 
 ### `data/site_meta.json`
 
@@ -64,16 +67,28 @@ Empty string values are automatically hidden on the page.
 - `year`
 - `contact_email`
 - `license`
+- `paper_badge_text`
+- `authors` (string array)
+- `affiliations` (string array)
+
+### `data/method_media.json`
+
+Top-level keys: `flow`, `reliability`.
+
+Each entry includes:
+
+- `title`
+- `mp4`
+- `webm`
+- `gif`
+- `poster`
+- `alt`
+- `caption`
 
 ## Deployment (GitHub Pages)
 
-1. Push this repo to GitHub.
-2. In repository settings, enable **Pages**.
-3. Set source to **Deploy from a branch**.
-4. Select branch `main` and folder `/ (root)`.
-5. Save and wait for deployment.
-
-## Notes
-
-- Replace `data/links.json` values once final paper/arXiv/slide URLs are public.
-- Current results are text values extracted from the camera-ready tables.
+1. Push to `main`.
+2. Repository `Settings -> Pages`.
+3. Source: `Deploy from a branch`.
+4. Branch: `main`, Folder: `/ (root)`.
+5. Wait for Pages build and verify live URL.

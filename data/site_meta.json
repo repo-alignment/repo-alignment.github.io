@@ -4,5 +4,20 @@
   "conference": "ICLR",
   "year": 2026,
   "contact_email": "xycao@mit.edu",
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "paper_badge_text": "ICLR 2026 Conference Paper",
+  "authors": [
+    "Xiaoyang Cao",
+    "Zelai Xu",
+    "Mo Guang",
+    "Kaiwen Long",
+    "Michiel A. Bakker",
+    "Yu Wang",
+    "Chao Yu"
+  ],
+  "affiliations": [
+    "Massachusetts Institute of Technology",
+    "Tsinghua University",
+    "Li Auto Inc."
+  ]
 }

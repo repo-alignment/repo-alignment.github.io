@@ -1,7 +1,8 @@
 const DATA_FILES = {
   links: "data/links.json",
   meta: "data/site_meta.json",
-  results: "data/results_main.json"
+  results: "data/results_main.json",
+  media: "data/method_media.json"
 };
 
 const DATASET_LABEL = {
@@ -13,6 +14,8 @@ const MODEL_LABEL = {
   mistral: "Mistral-7B-Instruct",
   llama: "Llama-3-8B-Instruct"
 };
+
+let mediaConfig = null;
 
 function formatSigned(value) {
   const sign = value >= 0 ? "+" : "";
@@ -74,6 +77,18 @@ function applyMeta(meta) {
   document.getElementById("project-kicker").textContent = `${meta.conference} ${meta.year}`;
   document.getElementById("hero-tagline").textContent = meta.tagline;
 
+  if (meta.paper_badge_text) {
+    document.getElementById("paper-badge").textContent = meta.paper_badge_text;
+  }
+
+  if (Array.isArray(meta.authors) && meta.authors.length > 0) {
+    document.getElementById("author-line").textContent = meta.authors.join(", ");
+  }
+
+  if (Array.isArray(meta.affiliations) && meta.affiliations.length > 0) {
+    document.getElementById("affiliation-line").textContent = meta.affiliations.join(" · ");
+  }
+
   const emailNode = document.getElementById("contact-email");
   emailNode.textContent = meta.contact_email;
   emailNode.setAttribute("href", `mailto:${meta.contact_email}`);
@@ -95,6 +110,13 @@ function safeSetLink(id, url) {
 function applyLinks(links) {
   safeSetLink("cta-paper", links.paper_url);
   safeSetLink("cta-code", links.code_url);
+
+  safeSetLink("resource-paper-link", links.paper_url);
+  safeSetLink("resource-code-link", links.code_url);
+  safeSetLink("resource-issues-link", links.issues_url);
+  safeSetLink("resource-arxiv-link", links.arxiv_url);
+  safeSetLink("resource-slides-link", links.slides_url);
+
   safeSetLink("issues-link", links.issues_url);
   safeSetLink("arxiv-link", links.arxiv_url);
   safeSetLink("slides-link", links.slides_url);
@@ -134,22 +156,105 @@ function setupRevealAnimation() {
   }
 }
 
+function setActiveTab(kind) {
+  for (const btn of document.querySelectorAll(".tab-btn")) {
+    const isActive = btn.dataset.media === kind;
+    btn.classList.toggle("is-active", isActive);
+    btn.setAttribute("aria-selected", isActive ? "true" : "false");
+  }
+}
+
+function showGifFallback(cfg) {
+  const video = document.getElementById("method-video");
+  const gif = document.getElementById("method-gif-fallback");
+  gif.src = cfg.gif;
+  gif.alt = cfg.alt;
+  gif.hidden = false;
+  video.hidden = true;
+}
+
+function applyMedia(kind) {
+  if (!mediaConfig || !mediaConfig[kind]) return;
+
+  const cfg = mediaConfig[kind];
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const panel = document.getElementById("media-panel");
+  const caption = document.getElementById("method-media-caption");
+  const video = document.getElementById("method-video");
+  const gif = document.getElementById("method-gif-fallback");
+  const webmSource = document.getElementById("method-webm-source");
+  const mp4Source = document.getElementById("method-mp4-source");
+
+  panel.setAttribute("aria-labelledby", kind === "flow" ? "tab-flow" : "tab-reliability");
+  caption.textContent = cfg.caption;
+
+  video.hidden = false;
+  gif.hidden = true;
+
+  webmSource.src = cfg.webm;
+  mp4Source.src = cfg.mp4;
+  video.poster = cfg.poster;
+  video.setAttribute("aria-label", cfg.alt);
+  video.muted = true;
+  video.loop = true;
+  video.playsInline = true;
+
+  video.load();
+
+  const tryPlay = () => {
+    if (reduceMotion) {
+      video.removeAttribute("autoplay");
+      video.controls = true;
+      video.pause();
+      return;
+    }
+
+    video.setAttribute("autoplay", "");
+    video.controls = false;
+    const playPromise = video.play();
+    if (playPromise && typeof playPromise.catch === "function") {
+      playPromise.catch(() => showGifFallback(cfg));
+    }
+  };
+
+  if (!video.canPlayType || (video.canPlayType("video/webm") === "" && video.canPlayType("video/mp4") === "")) {
+    showGifFallback(cfg);
+  } else {
+    tryPlay();
+  }
+
+  video.onerror = () => showGifFallback(cfg);
+  setActiveTab(kind);
+}
+
+function setupMethodTabs(media) {
+  mediaConfig = media;
+  for (const btn of document.querySelectorAll(".tab-btn")) {
+    btn.addEventListener("click", () => applyMedia(btn.dataset.media));
+  }
+  applyMedia("flow");
+}
+
 async function boot() {
-  const [linksRes, metaRes, resultsRes] = await Promise.all([
+  const [linksRes, metaRes, resultsRes, mediaRes] = await Promise.all([
     fetch(DATA_FILES.links),
     fetch(DATA_FILES.meta),
-    fetch(DATA_FILES.results)
+    fetch(DATA_FILES.results),
+    fetch(DATA_FILES.media)
   ]);
 
-  const [links, meta, results] = await Promise.all([
+  const [links, meta, results, media] = await Promise.all([
     linksRes.json(),
     metaRes.json(),
-    resultsRes.json()
+    resultsRes.json(),
+    mediaRes.json()
   ]);
 
   applyMeta(meta);
   applyLinks(links);
   renderResults(normalizeRows(results));
+  setupMethodTabs(media);
   setupCitationCopy();
   setupRevealAnimation();
 }

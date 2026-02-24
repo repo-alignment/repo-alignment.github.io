@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import json
 import re
-import sys
 from html.parser import HTMLParser
 from pathlib import Path
 
@@ -25,6 +24,7 @@ def validate_json_contracts() -> None:
     results = load_json(ROOT / "data" / "results_main.json")
     links = load_json(ROOT / "data" / "links.json")
     meta = load_json(ROOT / "data" / "site_meta.json")
+    method_media = load_json(ROOT / "data" / "method_media.json")
 
     if not isinstance(results, list) or not results:
         fail("data/results_main.json must be a non-empty list")
@@ -49,10 +49,48 @@ def validate_json_contracts() -> None:
     required_links = {"paper_url", "code_url", "arxiv_url", "issues_url", "slides_url"}
     if set(links.keys()) != required_links:
         fail("data/links.json keys mismatch")
+    for key in required_links:
+        if not isinstance(links[key], str):
+            fail(f"data/links.json {key} must be a string")
 
-    required_meta = {"project_name", "tagline", "conference", "year", "contact_email", "license"}
+    required_meta = {
+        "project_name",
+        "tagline",
+        "conference",
+        "year",
+        "contact_email",
+        "license",
+        "paper_badge_text",
+        "authors",
+        "affiliations",
+    }
     if set(meta.keys()) != required_meta:
         fail("data/site_meta.json keys mismatch")
+    if not isinstance(meta["year"], int):
+        fail("data/site_meta.json year must be an integer")
+    for field in ("project_name", "tagline", "conference", "contact_email", "license", "paper_badge_text"):
+        if not isinstance(meta[field], str) or not meta[field].strip():
+            fail(f"data/site_meta.json {field} must be a non-empty string")
+    for field in ("authors", "affiliations"):
+        if not isinstance(meta[field], list) or not meta[field]:
+            fail(f"data/site_meta.json {field} must be a non-empty list")
+        if not all(isinstance(v, str) and v.strip() for v in meta[field]):
+            fail(f"data/site_meta.json {field} must only contain non-empty strings")
+
+    required_media_keys = {"title", "mp4", "webm", "gif", "poster", "alt", "caption"}
+    for media_name in ("flow", "reliability"):
+        if media_name not in method_media:
+            fail(f"data/method_media.json missing {media_name}")
+        media_item = method_media[media_name]
+        if set(media_item.keys()) != required_media_keys:
+            fail(f"data/method_media.json {media_name} keys mismatch")
+        for field in required_media_keys:
+            if not isinstance(media_item[field], str) or not media_item[field].strip():
+                fail(f"data/method_media.json {media_name}.{field} must be a non-empty string")
+        for path_field in ("mp4", "webm", "gif", "poster"):
+            path = (ROOT / media_item[path_field]).resolve()
+            if not path.exists():
+                fail(f"missing media asset for {media_name}.{path_field}: {media_item[path_field]}")
 
 
 class ImgAltChecker(HTMLParser):
@@ -84,12 +122,42 @@ def validate_html_and_links() -> None:
     for ref in refs:
         if ref.startswith(("http://", "https://", "#", "mailto:", "javascript:")):
             continue
+        if ref == "":
+            continue
         local = (ROOT / ref).resolve()
         if not local.exists():
             fail(f"broken local reference in index.html: {ref}")
 
 
+def validate_content_contract() -> None:
+    html = (ROOT / "index.html").read_text(encoding="utf-8")
+
+    required_nav = ["#tldr", "#method", "#results", "#resources", "#citation"]
+    for anchor in required_nav:
+        if f'href="{anchor}"' not in html:
+            fail(f"missing nav anchor {anchor}")
+
+    forbidden_tokens = ['id="repro"', 'href="#repro"', ">Reproducibility<"]
+    for token in forbidden_tokens:
+        if token in html:
+            fail("reproducibility section/nav should not exist in v1.1")
+
+    required_snippets = [
+        "ICLR 2026 Conference Paper",
+        "<h2 id=\"results-title\">Key Results</h2>",
+        "<strong>Research Gap:</strong>",
+        "<strong>Method:</strong>",
+        "<strong>Performance:</strong>",
+        "RE-PO consistently improves AlpacaEval 2 LC/WR across UltraFeedback and MultiPref settings.",
+        "AlpacaEval 2 Length-Controlled Win Rate (LC) and Win Rate (WR).",
+    ]
+    for snippet in required_snippets:
+        if snippet not in html:
+            fail(f"missing required content snippet: {snippet}")
+
+
 if __name__ == "__main__":
     validate_json_contracts()
     validate_html_and_links()
+    validate_content_contract()
     print("OK: site validation passed")
