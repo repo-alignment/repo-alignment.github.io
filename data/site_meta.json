@@ -1,0 +1,8 @@
+{
+  "project_name": "RE-PO",
+  "tagline": "Robust preference optimization under noisy labels with EM-based reliability weighting.",
+  "conference": "ICLR",
+  "year": 2026,
+  "contact_email": "xycao@mit.edu",
+  "license": "Apache-2.0"
+}

@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RE-PO | Robust Enhanced Policy Optimization for LLM Alignment</title>
+  <meta name="description" content="RE-PO improves robustness of LLM preference optimization under noisy labels with EM-based reliability weighting.">
+  <meta name="theme-color" content="#0f172a">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <p class="project-kicker" id="project-kicker">ICLR 2026</p>
+      <nav class="topnav" aria-label="Primary">
+        <a href="#tldr">TL;DR</a>
+        <a href="#method">Method</a>
+        <a href="#results">Results</a>
+        <a href="#repro">Reproducibility</a>
+        <a href="#citation">Citation</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section class="hero reveal" aria-labelledby="hero-title">
+      <div class="container hero-grid">
+        <div>
+          <p class="hero-tag">Project Page</p>
+          <h1 id="hero-title">RE-PO: Robust Enhanced Policy Optimization for LLM Alignment</h1>
+          <p class="hero-subtitle" id="hero-tagline">
+            Robust preference optimization under noisy labels with EM-based reliability weighting.
+          </p>
+          <p class="hero-quant" id="hero-quant">
+            Improves AlpacaEval 2 win rate by up to +7.0 points.
+          </p>
+          <div class="hero-cta" role="group" aria-label="Project links">
+            <a id="cta-paper" class="btn btn-primary" href="assets/paper/iclr2026_conference.pdf" target="_blank" rel="noopener">Paper</a>
+            <a id="cta-code" class="btn btn-secondary" href="https://github.com/xycao/RE-PO/tree/main/re-po-open" target="_blank" rel="noopener">Code</a>
+            <a id="cta-citation" class="btn btn-ghost" href="#citation">Citation</a>
+          </div>
+        </div>
+        <aside class="hero-aside" aria-label="Key facts">
+          <div class="fact-card">
+            <h2>Core Idea</h2>
+            <p>Infer label correctness and annotator reliability, then adaptively reweight preference losses.</p>
+          </div>
+          <div class="fact-card">
+            <h2>Benchmarks</h2>
+            <p>UltraFeedback and MultiPref on Mistral-7B and Llama-3-8B.</p>
+          </div>
+          <div class="fact-card">
+            <h2>Metrics</h2>
+            <p>AlpacaEval 2 LC and WR with direct DPO vs RE-DPO comparison.</p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="tldr" class="section reveal" aria-labelledby="tldr-title">
+      <div class="container">
+        <h2 id="tldr-title">TL;DR</h2>
+        <ul class="tldr-list">
+          <li><strong>Problem:</strong> Preference datasets for alignment include noisy or inconsistent labels.</li>
+          <li><strong>Method:</strong> RE-PO introduces an EM-style loop to estimate confidence and reliability, then reweights training loss.</li>
+          <li><strong>Impact:</strong> RE-DPO consistently improves AlpacaEval 2 LC/WR across UltraFeedback and MultiPref settings.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="method" class="section section-alt reveal" aria-labelledby="method-title">
+      <div class="container method-grid">
+        <div>
+          <h2 id="method-title">Method Overview</h2>
+          <p>
+            RE-PO models each observed preference as potentially noisy. In the E-step, it estimates the posterior probability
+            that an observed label is correct. In the M-step, it updates both policy parameters and annotator reliability,
+            using these posteriors as adaptive weights.
+          </p>
+          <p>
+            This yields robust optimization against corrupted feedback while remaining compatible with DPO-style training
+            pipelines and practical mini-batch updates.
+          </p>
+          <div class="mini-note" role="note">
+            Practical implementation uses EMA updates for reliability in mini-batch training.
+          </div>
+        </div>
+        <figure class="figure-card">
+          <img src="assets/img/flow_chart.png" alt="Flow chart of RE-PO EM loop from noisy labels to weighted policy optimization.">
+          <figcaption>RE-PO alternates confidence estimation and weighted policy updates.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section id="results" class="section reveal" aria-labelledby="results-title">
+      <div class="container">
+        <h2 id="results-title">Key Results (Text Table)</h2>
+        <p class="section-lead">
+          On UltraFeedback, RE-DPO improves both LC and WR over DPO for Mistral-7B and Llama-3-8B.
+          On MultiPref, gains persist in the real multi-annotator setting, indicating stable robustness to annotation noise.
+        </p>
+        <div class="table-wrap" role="region" aria-label="Main results" tabindex="0">
+          <table id="results-table">
+            <thead>
+              <tr>
+                <th>Dataset</th>
+                <th>Model</th>
+                <th>DPO (LC/WR)</th>
+                <th>RE-DPO (LC/WR)</th>
+                <th>Delta LC</th>
+                <th>Delta WR</th>
+              </tr>
+            </thead>
+            <tbody id="results-body"></tbody>
+          </table>
+        </div>
+        <div class="result-figures">
+          <figure class="figure-card">
+            <img src="assets/img/one_annotator_eta.png" alt="Estimated and ground-truth annotator reliability in single-annotator synthetic noise setting.">
+            <figcaption>Single-annotator reliability tracking under controlled noise.</figcaption>
+          </figure>
+          <figure class="figure-card">
+            <img src="assets/img/two_annotators_eta.png" alt="Estimated and ground-truth reliability for two annotators where one annotator has increasing noise.">
+            <figcaption>Two-annotator setting: RE-PO tracks diverging reliability.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section id="repro" class="section section-alt reveal" aria-labelledby="repro-title">
+      <div class="container">
+        <h2 id="repro-title">Reproducibility</h2>
+        <p class="section-lead">
+          The open-source pipeline supports training, AlpacaEval 2 evaluation, and automatic PDF alignment reporting.
+          See the full reproducibility guide for environment and end-to-end workflow details.
+        </p>
+        <div class="code-grid">
+          <article class="code-card">
+            <h3>Train</h3>
+            <pre><code>python -m repo_open.train \
+  --config configs/main_results/mistral_re_dpo_ultrafeedback.yaml \
+  --method re_dpo</code></pre>
+          </article>
+          <article class="code-card">
+            <h3>Evaluate</h3>
+            <pre><code>python -m repo_open.eval.alpacaeval \
+  --model_path outputs/mistral_ultra_re_dpo/42/model \
+  --out outputs/mistral_ultra_re_dpo/42/alpacaeval_metrics.json</code></pre>
+          </article>
+          <article class="code-card">
+            <h3>Compare With PDF</h3>
+            <pre><code>python -m repo_open.report.compare_pdf \
+  --runs_dir outputs \
+  --pdf_table refs/pdf_targets.yaml \
+  --out reports/alignment_report.md</code></pre>
+          </article>
+        </div>
+        <p class="repro-link-row">
+          <a id="repro-doc-link" href="https://github.com/xycao/RE-PO/tree/main/re-po-open/docs/repro.md" target="_blank" rel="noopener">Read Full Repro Guide</a>
+        </p>
+      </div>
+    </section>
+
+    <section id="citation" class="section reveal" aria-labelledby="citation-title">
+      <div class="container citation-grid">
+        <div>
+          <h2 id="citation-title">Citation</h2>
+          <p>If RE-PO is useful to your research, please cite:</p>
+          <div class="citation-box">
+            <pre id="citation-text"><code>@inproceedings{cao2026repo,
+  title     = {RE-PO: Robust Enhanced Policy Optimization as a General Framework for LLM Alignment},
+  author    = {Cao, Xiaoyang and Xu, Zelai and Guang, Mo and Long, Kaiwen and Bakker, Michiel A. and Wang, Yu and Yu, Chao},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2026}
+}</code></pre>
+            <button id="copy-citation" class="btn btn-secondary" type="button">Copy BibTeX</button>
+            <p id="copy-status" class="copy-status" aria-live="polite"></p>
+          </div>
+        </div>
+        <aside class="contact-card" aria-label="Contact and links">
+          <h3>Contact</h3>
+          <p>Email: <a id="contact-email" href="mailto:xycao@mit.edu">xycao@mit.edu</a></p>
+          <p><a id="issues-link" href="https://github.com/xycao/RE-PO/issues" target="_blank" rel="noopener">GitHub Issues</a></p>
+          <p><a id="arxiv-link" href="#" hidden>arXiv</a></p>
+          <p><a id="slides-link" href="#" hidden>Slides</a></p>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <p><span id="project-name">RE-PO</span> <span id="project-year">2026</span></p>
+      <p class="footer-note">License: <span id="project-license">Apache-2.0</span></p>
+    </div>
+  </footer>
+
+  <script src="assets/js/site.js" defer></script>
+</body>
+</html>
