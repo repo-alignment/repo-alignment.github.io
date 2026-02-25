@@ -20,6 +20,7 @@
       <nav class="topnav" aria-label="Primary">
         <a href="#tldr">TL;DR</a>
         <a href="#method">Method</a>
+        <a href="#preference-duel">Cases</a>
         <a href="#results">Results</a>
         <a href="#resources">Resources</a>
         <a href="#citation">Citation</a>
@@ -116,6 +117,66 @@
             <img id="method-gif-fallback" class="method-gif-fallback" src="" alt="Method animation fallback image" hidden>
             <p id="method-media-caption" class="media-caption"></p>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="preference-duel" class="section reveal" aria-labelledby="duel-title">
+      <div class="container">
+        <h2 id="duel-title">Preference Duel Cases</h2>
+        <p class="section-lead">
+          Real response-level differences under noisy preferences.
+        </p>
+        <p class="duel-module-note">
+          Phase A evidence (dataset-level). Source: camera-ready appendix.
+        </p>
+
+        <div class="duel-grid" id="duel-shell" tabindex="0" aria-label="Preference duel carousel">
+          <div class="duel-text-card">
+            <div class="duel-meta-row">
+              <span id="duel-index" class="duel-pill">Case 1/6</span>
+              <span id="duel-phase-badge" class="duel-pill duel-phase">Phase A evidence (dataset-level)</span>
+              <span id="duel-source-badge" class="duel-pill duel-source">camera-ready appendix</span>
+            </div>
+
+            <h3 class="duel-subtitle">Prompt</h3>
+            <p id="duel-prompt-text" class="duel-prompt-text"></p>
+
+            <div class="duel-compare-grid">
+              <article class="duel-side duel-left">
+                <h4 id="duel-left-label">Left</h4>
+                <p id="duel-left-text"></p>
+              </article>
+              <article class="duel-side duel-right">
+                <h4 id="duel-right-label">Right</h4>
+                <p id="duel-right-text"></p>
+              </article>
+            </div>
+
+            <div class="duel-outcome">
+              <p><strong>Winner:</strong> <span id="duel-winner">-</span></p>
+              <p><strong>Why:</strong> <span id="duel-reason">-</span></p>
+              <p><strong>Signal:</strong> <span id="duel-signal">-</span></p>
+              <p><strong>Source:</strong> <span id="duel-source-line">-</span></p>
+            </div>
+
+            <div class="duel-controls" role="group" aria-label="Preference duel controls">
+              <button id="duel-prev" class="btn btn-secondary" type="button">Prev</button>
+              <button id="duel-next" class="btn btn-secondary" type="button">Next</button>
+              <button id="duel-pause" class="btn btn-ghost" type="button">Pause</button>
+            </div>
+          </div>
+
+          <figure class="duel-media-card">
+            <img id="duel-gif" src="" alt="Preference duel animated case" loading="lazy">
+            <figcaption id="duel-media-caption"></figcaption>
+            <p class="duel-downloads">
+              Backup:
+              <a id="duel-mp4-link" href="#" target="_blank" rel="noopener">MP4</a>
+              <span>/</span>
+              <a id="duel-webm-link" href="#" target="_blank" rel="noopener">WebM</a>
+            </p>
+          </figure>
         </div>
       </div>
     </section>

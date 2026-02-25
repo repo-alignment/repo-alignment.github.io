@@ -1,14 +1,14 @@
-# RE-PO Project Website (v1.1)
+# RE-PO Project Website (v1.3)
 
 Static GitHub Pages site for **RE-PO: Robust Enhanced Policy Optimization for LLM Alignment**.
 
-## MVP v1.1 Highlights
+## v1.3 Highlights
 
-- ICLR 2026 badge + author/affiliation strip.
-- Homepage sections: `Hero`, `TL;DR`, `Method`, `Results`, `Resources`, `Citation`.
-- Updated TL;DR terminology: `Research Gap / Method / Performance`.
-- Animated method module with tabbed `Flow` and `Reliability` views.
-- Video-first delivery (`WebM/MP4`) with `GIF` fallback.
+- ICLR 2026 badge + author and affiliation strip.
+- Homepage sections: `Hero`, `TL;DR`, `Method`, `Preference Duel Cases`, `Results`, `Resources`, `Citation`.
+- New `Preference Duel Carousel` with 6 Phase A qualitative cases from camera-ready appendix.
+- GIF-first duel media (`gif`) with backup `mp4/webm` links.
+- Existing method animations remain available via `method_media.json`.
 
 ## Local Development
 
@@ -19,23 +19,22 @@ python -m http.server 8000
 # open http://localhost:8000
 ```
 
-## Animation Asset Generation
+## Media Generation
 
 ```bash
 cd re-po-project-page
 pip install -r scripts/requirements-anim.txt
 python scripts/generate_method_media.py
+python scripts/build_preference_case_media.py
 python scripts/validate_site.py
 ```
 
-Generated files:
+Generated duel outputs:
 
-- `assets/media/flow_method.mp4`
-- `assets/media/flow_method.webm`
-- `assets/media/flow_method.gif`
-- `assets/media/reliability_method.mp4`
-- `assets/media/reliability_method.webm`
-- `assets/media/reliability_method.gif`
+- `assets/cases/<case_id>.gif`
+- `assets/cases/<case_id>.mp4`
+- `assets/cases/<case_id>.webm`
+- `assets/cases/<case_id>.png`
 
 ## Data Contracts
 
@@ -84,6 +83,37 @@ Each entry includes:
 - `poster`
 - `alt`
 - `caption`
+
+### `data/preference_cases.json`
+
+- `case_id`
+- `phase` (`appendix|model_pair`)
+- `dataset`
+- `model_pair`
+- `prompt`
+- `left_label`
+- `right_label`
+- `left_text`
+- `right_text`
+- `winner` (`left|right|tie`)
+- `reason_short`
+- `confidence_signal`
+- `source`
+- `source_ref`
+- `source_badge`
+
+### `data/preference_media.json`
+
+Object keyed by `case_id`.
+
+Each item includes:
+
+- `gif`
+- `mp4`
+- `webm`
+- `poster`
+- `alt`
+- `duration_ms`
 
 ## Deployment (GitHub Pages)
 

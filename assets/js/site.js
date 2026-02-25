@@ -2,7 +2,9 @@ const DATA_FILES = {
   links: "data/links.json",
   meta: "data/site_meta.json",
   results: "data/results_main.json",
-  media: "data/method_media.json"
+  media: "data/method_media.json",
+  preferenceCases: "data/preference_cases.json",
+  preferenceMedia: "data/preference_media.json"
 };
 
 const DATASET_LABEL = {
@@ -16,10 +18,25 @@ const MODEL_LABEL = {
 };
 
 let mediaConfig = null;
+let duelState = {
+  cases: [],
+  mediaByCase: {},
+  idx: 0,
+  timer: null,
+  running: true,
+  reduceMotion: false
+};
 
 function formatSigned(value) {
   const sign = value >= 0 ? "+" : "";
   return `${sign}${value.toFixed(1)}`;
+}
+
+function clipText(text, maxLen = 320) {
+  if (!text) return "";
+  const normalized = String(text).replace(/\s+/g, " ").trim();
+  if (normalized.length <= maxLen) return normalized;
+  return `${normalized.slice(0, maxLen - 3)}...`;
 }
 
 function normalizeRows(entries) {
@@ -236,25 +253,165 @@ function setupMethodTabs(media) {
   applyMedia("flow");
 }
 
+function winnerLabel(item) {
+  if (item.winner === "left") return item.left_label;
+  if (item.winner === "right") return item.right_label;
+  return "Tie";
+}
+
+function renderDuelCase() {
+  const item = duelState.cases[duelState.idx];
+  if (!item) return;
+
+  const media = duelState.mediaByCase[item.case_id];
+  if (!media) return;
+
+  document.getElementById("duel-index").textContent = `Case ${duelState.idx + 1}/${duelState.cases.length}`;
+  document.getElementById("duel-phase-badge").textContent = item.phase === "appendix"
+    ? "Phase A evidence (dataset-level)"
+    : "Phase B evidence (model-pair)";
+  document.getElementById("duel-source-badge").textContent = item.source_badge;
+
+  document.getElementById("duel-prompt-text").textContent = clipText(item.prompt, 360);
+  document.getElementById("duel-left-label").textContent = item.left_label;
+  document.getElementById("duel-right-label").textContent = item.right_label;
+  document.getElementById("duel-left-text").textContent = clipText(item.left_text, 340);
+  document.getElementById("duel-right-text").textContent = clipText(item.right_text, 340);
+  document.getElementById("duel-winner").textContent = winnerLabel(item);
+  document.getElementById("duel-reason").textContent = item.reason_short;
+  document.getElementById("duel-signal").textContent = item.confidence_signal;
+  document.getElementById("duel-source-line").textContent = `${item.source} (${item.source_ref})`;
+
+  const gifNode = document.getElementById("duel-gif");
+  const captionNode = document.getElementById("duel-media-caption");
+  const reduced = duelState.reduceMotion;
+
+  gifNode.alt = media.alt;
+  gifNode.src = reduced ? media.poster : media.gif;
+  gifNode.onerror = () => {
+    gifNode.src = media.poster;
+  };
+
+  const durationSec = Number(media.duration_ms || 0) / 1000;
+  captionNode.textContent = reduced
+    ? `${item.case_id} static preview (reduced motion mode).`
+    : `${item.case_id} animated comparison (${durationSec.toFixed(1)}s loop).`;
+
+  const mp4 = document.getElementById("duel-mp4-link");
+  const webm = document.getElementById("duel-webm-link");
+  mp4.href = media.mp4;
+  webm.href = media.webm;
+}
+
+function stopDuelAuto() {
+  if (duelState.timer) {
+    clearInterval(duelState.timer);
+    duelState.timer = null;
+  }
+}
+
+function startDuelAuto() {
+  stopDuelAuto();
+  if (!duelState.running || duelState.reduceMotion || duelState.cases.length < 2) {
+    return;
+  }
+  duelState.timer = setInterval(() => {
+    duelState.idx = (duelState.idx + 1) % duelState.cases.length;
+    renderDuelCase();
+  }, 5200);
+}
+
+function moveDuel(delta) {
+  if (duelState.cases.length === 0) return;
+  const n = duelState.cases.length;
+  duelState.idx = (duelState.idx + delta + n) % n;
+  renderDuelCase();
+}
+
+function setupPreferenceDuel(cases, mediaMap) {
+  const section = document.getElementById("preference-duel");
+  if (!section) return;
+
+  if (!Array.isArray(cases) || cases.length === 0 || !mediaMap || typeof mediaMap !== "object") {
+    section.hidden = true;
+    return;
+  }
+
+  duelState.cases = cases;
+  duelState.mediaByCase = mediaMap;
+  duelState.idx = 0;
+  duelState.running = true;
+  duelState.reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  renderDuelCase();
+
+  const prev = document.getElementById("duel-prev");
+  const next = document.getElementById("duel-next");
+  const pause = document.getElementById("duel-pause");
+  const shell = document.getElementById("duel-shell");
+
+  prev.addEventListener("click", () => {
+    moveDuel(-1);
+    startDuelAuto();
+  });
+
+  next.addEventListener("click", () => {
+    moveDuel(1);
+    startDuelAuto();
+  });
+
+  pause.addEventListener("click", () => {
+    duelState.running = !duelState.running;
+    pause.textContent = duelState.running ? "Pause" : "Resume";
+    startDuelAuto();
+  });
+
+  shell.addEventListener("keydown", (evt) => {
+    if (evt.key === "ArrowLeft") {
+      evt.preventDefault();
+      moveDuel(-1);
+      startDuelAuto();
+    }
+    if (evt.key === "ArrowRight") {
+      evt.preventDefault();
+      moveDuel(1);
+      startDuelAuto();
+    }
+  });
+
+  if (duelState.reduceMotion) {
+    duelState.running = false;
+    pause.textContent = "Auto Off";
+    pause.disabled = true;
+  }
+
+  startDuelAuto();
+}
+
 async function boot() {
-  const [linksRes, metaRes, resultsRes, mediaRes] = await Promise.all([
+  const [linksRes, metaRes, resultsRes, mediaRes, prefCasesRes, prefMediaRes] = await Promise.all([
     fetch(DATA_FILES.links),
     fetch(DATA_FILES.meta),
     fetch(DATA_FILES.results),
-    fetch(DATA_FILES.media)
+    fetch(DATA_FILES.media),
+    fetch(DATA_FILES.preferenceCases),
+    fetch(DATA_FILES.preferenceMedia)
   ]);
 
-  const [links, meta, results, media] = await Promise.all([
+  const [links, meta, results, media, preferenceCases, preferenceMedia] = await Promise.all([
     linksRes.json(),
     metaRes.json(),
     resultsRes.json(),
-    mediaRes.json()
+    mediaRes.json(),
+    prefCasesRes.json(),
+    prefMediaRes.json()
   ]);
 
   applyMeta(meta);
   applyLinks(links);
   renderResults(normalizeRows(results));
   setupMethodTabs(media);
+  setupPreferenceDuel(preferenceCases, preferenceMedia);
   setupCitationCopy();
   setupRevealAnimation();
 }
