@@ -276,8 +276,8 @@ h3 {
 
 .method-grid {
   display: grid;
-  grid-template-columns: 1.15fr 1fr;
-  gap: 24px;
+  grid-template-columns: 1fr;
+  gap: 16px;
   align-items: start;
 }
 
@@ -311,193 +311,7 @@ h3 {
 }
 
 .static-method-figure {
-  margin-top: 14px;
-}
-
-.method-anim-card {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  box-shadow: var(--shadow);
-  padding: 12px;
-}
-
-.tab-list {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 10px;
-  flex-wrap: wrap;
-}
-
-.tab-btn {
-  border: 1px solid var(--line);
-  background: #fff;
-  border-radius: 8px;
-  padding: 8px 12px;
-  font-weight: 700;
-}
-
-.tab-btn.is-active {
-  background: #e8f1fb;
-  border-color: #8db4db;
-  color: #0b4f91;
-}
-
-.media-panel {
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: #fcfeff;
-  padding: 8px;
-}
-
-.method-video,
-.method-gif-fallback {
-  width: 100%;
-  border-radius: 8px;
-  display: block;
-}
-
-.media-caption {
-  margin: 8px 0 0;
-  color: var(--muted);
-  font-size: 0.9rem;
-}
-
-.duel-module-note {
-  margin: 0 0 14px;
-  color: #6f3c20;
-  font-weight: 600;
-}
-
-.duel-grid {
-  display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  gap: 14px;
-  align-items: stretch;
-}
-
-.duel-text-card,
-.duel-media-card {
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  background: #fff;
-  box-shadow: var(--shadow);
-  padding: 12px;
-}
-
-.duel-meta-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.duel-pill {
-  border-radius: 999px;
-  border: 1px solid #b7cadf;
-  background: #f2f8ff;
-  color: #1c3e62;
-  font-size: 0.77rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  padding: 4px 9px;
-}
-
-.duel-phase {
-  border-color: #d9b99b;
-  background: #fff5ed;
-  color: #6f3c20;
-}
-
-.duel-source {
-  border-color: #c8cfd8;
-  background: #f3f5f8;
-  color: #334155;
-}
-
-.duel-subtitle {
-  margin: 10px 0 6px;
-}
-
-.duel-prompt-text {
-  margin: 0 0 10px;
-  color: var(--muted);
-}
-
-.duel-compare-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-
-.duel-side {
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  padding: 10px;
-}
-
-.duel-side h4 {
-  margin: 0 0 6px;
-  font-size: 0.98rem;
-}
-
-.duel-side p {
-  margin: 0;
-  color: var(--muted);
-  font-size: 0.9rem;
-}
-
-.duel-left {
-  background: #fff5f5;
-}
-
-.duel-right {
-  background: #f2fbf5;
-}
-
-.duel-outcome {
-  margin-top: 10px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: #fcfdff;
-  padding: 10px;
-}
-
-.duel-outcome p {
-  margin: 0 0 4px;
-  font-size: 0.9rem;
-}
-
-.duel-controls {
-  margin-top: 10px;
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.duel-media-card {
-  margin: 0;
-}
-
-.duel-media-card img {
-  width: 100%;
-  border-radius: 10px;
-  display: block;
-}
-
-.duel-media-card figcaption {
-  margin-top: 8px;
-  color: var(--muted);
-  font-size: 0.9rem;
-}
-
-.duel-downloads {
-  margin: 6px 0 0;
-  font-size: 0.85rem;
-  color: var(--muted);
-}
-
-.duel-downloads a {
-  font-weight: 700;
+  margin-top: 4px;
 }
 
 .table-wrap {
@@ -542,37 +356,6 @@ tbody tr:nth-child(odd) {
 .delta-neg {
   color: var(--danger);
   font-weight: 700;
-}
-
-.resource-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.resource-card {
-  display: block;
-  text-decoration: none;
-  color: inherit;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  padding: 12px;
-  background: #fff;
-  transition: transform 150ms ease, box-shadow 150ms ease;
-}
-
-.resource-card:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--shadow);
-}
-
-.resource-card h3 {
-  margin: 0 0 6px;
-}
-
-.resource-card p {
-  margin: 0;
-  color: var(--muted);
 }
 
 .citation-grid {
@@ -647,14 +430,8 @@ pre {
 
 @media (max-width: 980px) {
   .hero-grid,
-  .method-grid,
-  .citation-grid,
-  .duel-grid {
+  .citation-grid {
     grid-template-columns: 1fr;
-  }
-
-  .resource-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -683,18 +460,6 @@ pre {
   }
 
   .hero-cta {
-    flex-direction: column;
-  }
-
-  .resource-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .duel-compare-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .duel-controls {
     flex-direction: column;
   }
 }

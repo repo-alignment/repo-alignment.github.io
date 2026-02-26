@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>RE-PO | Robust Enhanced Policy Optimization for LLM Alignment</title>
-  <meta name="description" content="RE-PO improves robustness of LLM preference optimization under noisy labels with EM-based reliability weighting.">
+  <meta name="description" content="RE-PO is an ICLR 2026 conference paper on robust LLM preference optimization under noisy labels.">
   <meta name="theme-color" content="#0f172a">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,9 +20,7 @@
       <nav class="topnav" aria-label="Primary">
         <a href="#tldr">TL;DR</a>
         <a href="#method">Method</a>
-        <a href="#preference-duel">Cases</a>
         <a href="#results">Results</a>
-        <a href="#resources">Resources</a>
         <a href="#citation">Citation</a>
       </nav>
     </div>
@@ -38,8 +36,8 @@
           <p class="hero-subtitle" id="hero-tagline">
             Robust preference optimization under noisy labels with EM-based reliability weighting.
           </p>
-          <p class="hero-quant" id="hero-quant">
-            Improves AlpacaEval 2 win rate by up to +7.0 points.
+          <p class="hero-quant">
+            Conference publication at ICLR 2026.
           </p>
           <div class="hero-cta" role="group" aria-label="Project links">
             <a id="cta-paper" class="btn btn-primary" href="assets/paper/iclr2026_conference.pdf" target="_blank" rel="noopener">Paper</a>
@@ -56,14 +54,14 @@
         <aside class="hero-aside" aria-label="Key facts">
           <div class="fact-card">
             <h2>Core Idea</h2>
-            <p>Infer label correctness and annotator reliability, then adaptively reweight preference losses.</p>
+            <p>Infer preference-label correctness and annotator reliability, then reweight loss during policy optimization.</p>
           </div>
           <div class="fact-card">
-            <h2>Benchmarks</h2>
-            <p>UltraFeedback and MultiPref on Mistral-7B and Llama-3-8B.</p>
+            <h2>Scope</h2>
+            <p>UltraFeedback and MultiPref experiments on Mistral-7B and Llama-3-8B.</p>
           </div>
           <div class="fact-card">
-            <h2>Metrics</h2>
+            <h2>Target Metrics</h2>
             <p>AlpacaEval 2 Length-Controlled Win Rate (LC) and Win Rate (WR).</p>
           </div>
         </aside>
@@ -74,9 +72,9 @@
       <div class="container">
         <h2 id="tldr-title">TL;DR</h2>
         <ul class="tldr-list">
-          <li><strong>Research Gap:</strong> Preference datasets for alignment include noisy or inconsistent labels, while standard methods often treat labels as uniformly reliable.</li>
-          <li><strong>Method:</strong> RE-PO introduces an EM-style loop to estimate confidence and reliability, then reweights training loss.</li>
-          <li><strong>Performance:</strong> RE-PO consistently improves AlpacaEval 2 LC/WR across UltraFeedback and MultiPref settings.</li>
+          <li><strong>Research Gap:</strong> Preference labels are often noisy, while many alignment methods assume uniform label reliability.</li>
+          <li><strong>Method:</strong> RE-PO uses an EM-style procedure to estimate label confidence and annotator reliability, then applies adaptive loss weighting.</li>
+          <li><strong>Performance:</strong> RE-PO improves AlpacaEval 2 LC/WR over DPO across UltraFeedback and MultiPref setups.</li>
         </ul>
       </div>
     </section>
@@ -86,98 +84,20 @@
         <div>
           <h2 id="method-title">Method Overview</h2>
           <p>
-            RE-PO models each observed preference as potentially noisy. In the E-step, it estimates the posterior probability
-            that an observed label is correct. In the M-step, it updates both policy parameters and annotator reliability,
-            using these posteriors as adaptive weights.
+            RE-PO models observed preferences as potentially noisy signals. In the E-step, it estimates posterior confidence that
+            each label is correct. In the M-step, it updates policy parameters and annotator reliability with these confidences as weights.
           </p>
           <p>
-            This yields robust optimization against corrupted feedback while remaining compatible with DPO-style training
-            pipelines and practical mini-batch updates.
+            This keeps the training pipeline close to DPO while improving robustness against corrupted or inconsistent feedback.
           </p>
           <div class="mini-note" role="note">
-            Practical implementation uses EMA updates for reliability in mini-batch training.
-          </div>
-          <figure class="figure-card static-method-figure">
-            <img src="assets/img/flow_chart.png" alt="Flow chart of RE-PO EM loop from noisy labels to weighted policy optimization.">
-            <figcaption>RE-PO alternates confidence estimation and weighted policy updates.</figcaption>
-          </figure>
-        </div>
-
-        <div class="method-anim-card" aria-label="Method animation">
-          <h3>Dynamic View</h3>
-          <div class="tab-list" role="tablist" aria-label="Method animation tabs">
-            <button id="tab-flow" class="tab-btn is-active" role="tab" aria-selected="true" aria-controls="media-panel" data-media="flow">Flow Animation</button>
-            <button id="tab-reliability" class="tab-btn" role="tab" aria-selected="false" aria-controls="media-panel" data-media="reliability">Reliability Animation</button>
-          </div>
-          <div id="media-panel" class="media-panel" role="tabpanel" aria-labelledby="tab-flow">
-            <video id="method-video" class="method-video" autoplay muted loop playsinline preload="metadata" poster="assets/img/flow_chart.png">
-              <source id="method-webm-source" src="" type="video/webm">
-              <source id="method-mp4-source" src="" type="video/mp4">
-            </video>
-            <img id="method-gif-fallback" class="method-gif-fallback" src="" alt="Method animation fallback image" hidden>
-            <p id="method-media-caption" class="media-caption"></p>
+            Practical training uses mini-batch compatible reliability updates.
           </div>
         </div>
-      </div>
-    </section>
-
-    <section id="preference-duel" class="section reveal" aria-labelledby="duel-title">
-      <div class="container">
-        <h2 id="duel-title">Preference Duel Cases</h2>
-        <p class="section-lead">
-          Real response-level differences under noisy preferences.
-        </p>
-        <p class="duel-module-note">
-          Phase A evidence (dataset-level). Source: camera-ready appendix.
-        </p>
-
-        <div class="duel-grid" id="duel-shell" tabindex="0" aria-label="Preference duel carousel">
-          <div class="duel-text-card">
-            <div class="duel-meta-row">
-              <span id="duel-index" class="duel-pill">Case 1/6</span>
-              <span id="duel-phase-badge" class="duel-pill duel-phase">Phase A evidence (dataset-level)</span>
-              <span id="duel-source-badge" class="duel-pill duel-source">camera-ready appendix</span>
-            </div>
-
-            <h3 class="duel-subtitle">Prompt</h3>
-            <p id="duel-prompt-text" class="duel-prompt-text"></p>
-
-            <div class="duel-compare-grid">
-              <article class="duel-side duel-left">
-                <h4 id="duel-left-label">Left</h4>
-                <p id="duel-left-text"></p>
-              </article>
-              <article class="duel-side duel-right">
-                <h4 id="duel-right-label">Right</h4>
-                <p id="duel-right-text"></p>
-              </article>
-            </div>
-
-            <div class="duel-outcome">
-              <p><strong>Winner:</strong> <span id="duel-winner">-</span></p>
-              <p><strong>Why:</strong> <span id="duel-reason">-</span></p>
-              <p><strong>Signal:</strong> <span id="duel-signal">-</span></p>
-              <p><strong>Source:</strong> <span id="duel-source-line">-</span></p>
-            </div>
-
-            <div class="duel-controls" role="group" aria-label="Preference duel controls">
-              <button id="duel-prev" class="btn btn-secondary" type="button">Prev</button>
-              <button id="duel-next" class="btn btn-secondary" type="button">Next</button>
-              <button id="duel-pause" class="btn btn-ghost" type="button">Pause</button>
-            </div>
-          </div>
-
-          <figure class="duel-media-card">
-            <img id="duel-gif" src="" alt="Preference duel animated case" loading="lazy">
-            <figcaption id="duel-media-caption"></figcaption>
-            <p class="duel-downloads">
-              Backup:
-              <a id="duel-mp4-link" href="#" target="_blank" rel="noopener">MP4</a>
-              <span>/</span>
-              <a id="duel-webm-link" href="#" target="_blank" rel="noopener">WebM</a>
-            </p>
-          </figure>
-        </div>
+        <figure class="figure-card static-method-figure">
+          <img src="assets/img/flow_chart.png" alt="Flow chart of RE-PO EM loop from noisy labels to weighted policy optimization.">
+          <figcaption>RE-PO alternates confidence estimation and weighted policy updates.</figcaption>
+        </figure>
       </div>
     </section>
 
@@ -185,8 +105,7 @@
       <div class="container">
         <h2 id="results-title">Key Results</h2>
         <p class="section-lead">
-          On UltraFeedback, RE-DPO improves both LC and WR over DPO for Mistral-7B and Llama-3-8B.
-          On MultiPref, gains persist in the real multi-annotator setting, indicating stable robustness to annotation noise.
+          On UltraFeedback and MultiPref, RE-DPO improves LC and WR over DPO for both Mistral-7B and Llama-3-8B.
         </p>
         <div class="table-wrap" role="region" aria-label="Main results" tabindex="0">
           <table id="results-table">
@@ -202,41 +121,6 @@
             </thead>
             <tbody id="results-body"></tbody>
           </table>
-        </div>
-      </div>
-    </section>
-
-    <section id="resources" class="section section-alt reveal" aria-labelledby="resources-title">
-      <div class="container">
-        <h2 id="resources-title">Resources</h2>
-        <p class="section-lead">
-          Project resources are maintained in the official repositories and paper links below.
-        </p>
-        <div class="resource-grid">
-          <a id="resource-paper-link" class="resource-card" href="assets/paper/iclr2026_conference.pdf" target="_blank" rel="noopener">
-            <h3>Paper PDF</h3>
-            <p>Camera-ready ICLR 2026 paper.</p>
-          </a>
-          <a id="resource-code-link" class="resource-card" href="https://github.com/xycao/RE-PO/tree/main/re-po-open" target="_blank" rel="noopener">
-            <h3>Code</h3>
-            <p>Open-source training and evaluation pipeline.</p>
-          </a>
-          <a class="resource-card" href="#citation">
-            <h3>Citation</h3>
-            <p>Copy the BibTeX entry directly.</p>
-          </a>
-          <a id="resource-issues-link" class="resource-card" href="https://github.com/xycao/RE-PO/issues" target="_blank" rel="noopener">
-            <h3>Issues</h3>
-            <p>Report bugs and discuss implementation details.</p>
-          </a>
-          <a id="resource-arxiv-link" class="resource-card" href="#" hidden>
-            <h3>arXiv</h3>
-            <p>Public preprint entry.</p>
-          </a>
-          <a id="resource-slides-link" class="resource-card" href="#" hidden>
-            <h3>Slides</h3>
-            <p>Presentation deck and supplementary talk materials.</p>
-          </a>
         </div>
       </div>
     </section>
@@ -260,9 +144,7 @@
         <aside class="contact-card" aria-label="Contact and links">
           <h3>Contact</h3>
           <p>Email: <a id="contact-email" href="mailto:xycao@mit.edu">xycao@mit.edu</a></p>
-          <p><a id="issues-link" href="https://github.com/xycao/RE-PO/issues" target="_blank" rel="noopener">GitHub Issues</a></p>
-          <p><a id="arxiv-link" href="#" hidden>arXiv</a></p>
-          <p><a id="slides-link" href="#" hidden>Slides</a></p>
+          <p><a id="contact-code-link" href="https://github.com/xycao/RE-PO/tree/main/re-po-open" target="_blank" rel="noopener">Code Repository</a></p>
         </aside>
       </div>
     </section>
