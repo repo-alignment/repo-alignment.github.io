@@ -154,6 +154,14 @@ h1 {
   color: #243142;
 }
 
+.author-line a {
+  color: inherit;
+}
+
+.author-line a:hover {
+  color: #0b5cab;
+}
+
 .btn {
   border: 1px solid transparent;
   border-radius: 10px;

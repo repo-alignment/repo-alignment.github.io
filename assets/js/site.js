@@ -82,10 +82,6 @@ function applyMeta(meta) {
     setText("paper-badge", meta.paper_badge_text);
   }
 
-  if (Array.isArray(meta.authors) && meta.authors.length > 0) {
-    setText("author-line", meta.authors.join(", "));
-  }
-
   if (Array.isArray(meta.affiliations) && meta.affiliations.length > 0) {
     setText("affiliation-line", meta.affiliations.join(" · "));
   }
