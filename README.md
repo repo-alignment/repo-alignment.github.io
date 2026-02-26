@@ -1,13 +1,14 @@
-# RE-PO Project Website (v1.4)
+# RE-PO Project Website (v1.5)
 
 Static GitHub Pages site for **RE-PO: Robust Enhanced Policy Optimization for LLM Alignment**.
 
-## v1.4 Highlights
+## v1.5 Highlights
 
-- Explicit positioning as an **ICLR 2026 Conference Paper**.
-- Simplified information architecture: `Hero`, `TL;DR`, `Method`, `Results`, `Citation`.
-- Removed dynamic media modules and duel-case sections for cleaner reading flow.
-- Kept citation copy workflow and minimal contact entry.
+- Conference-first hero with a single badge: **🏆 Accepted to ICLR 2026**.
+- Lean information architecture: `Hero`, `Key Contributions`, `Method`, `Results`, `Citation`.
+- Removed duplicated summary cards and removed the entire contact panel.
+- Code entry is icon-only in the hero and points to the real repository.
+- Added static asset versioning (`?v=1.5`) to reduce cache-related blank-page issues.
 
 ## Local Development
 
@@ -33,7 +34,7 @@ python -m http.server 8000
 ### `data/links.json`
 
 - `paper_url`
-- `code_url`
+- `code_url` (must be `https://github.com/XiaoyangCao1113/RE-PO`)
 
 ### `data/site_meta.json`
 
@@ -41,7 +42,6 @@ python -m http.server 8000
 - `tagline`
 - `conference`
 - `year`
-- `contact_email`
 - `license`
 - `paper_badge_text`
 - `authors` (string array)

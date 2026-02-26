@@ -3,9 +3,8 @@
   "tagline": "Robust preference optimization under noisy labels with EM-based reliability weighting.",
   "conference": "ICLR",
   "year": 2026,
-  "contact_email": "xycao@mit.edu",
   "license": "Apache-2.0",
-  "paper_badge_text": "ICLR 2026 Conference Paper",
+  "paper_badge_text": "🏆 Accepted to ICLR 2026",
   "authors": [
     "Xiaoyang Cao",
     "Zelai Xu",

@@ -19,6 +19,12 @@ function formatSigned(value) {
   return `${sign}${value.toFixed(1)}`;
 }
 
+function setText(id, value) {
+  const node = document.getElementById(id);
+  if (!node || value == null) return;
+  node.textContent = String(value);
+}
+
 function normalizeRows(entries) {
   const grouped = new Map();
 
@@ -44,6 +50,7 @@ function normalizeRows(entries) {
 
 function renderResults(rows) {
   const tbody = document.getElementById("results-body");
+  if (!tbody) return;
   tbody.innerHTML = "";
 
   for (const row of rows) {
@@ -66,27 +73,22 @@ function renderResults(rows) {
 }
 
 function applyMeta(meta) {
-  document.getElementById("project-name").textContent = meta.project_name;
-  document.getElementById("project-year").textContent = String(meta.year);
-  document.getElementById("project-license").textContent = meta.license;
-  document.getElementById("project-kicker").textContent = `${meta.conference} ${meta.year}`;
-  document.getElementById("hero-tagline").textContent = meta.tagline;
+  setText("project-name", meta.project_name);
+  setText("project-year", meta.year);
+  setText("project-license", meta.license);
+  setText("hero-tagline", meta.tagline);
 
   if (meta.paper_badge_text) {
-    document.getElementById("paper-badge").textContent = meta.paper_badge_text;
+    setText("paper-badge", meta.paper_badge_text);
   }
 
   if (Array.isArray(meta.authors) && meta.authors.length > 0) {
-    document.getElementById("author-line").textContent = meta.authors.join(", ");
+    setText("author-line", meta.authors.join(", "));
   }
 
   if (Array.isArray(meta.affiliations) && meta.affiliations.length > 0) {
-    document.getElementById("affiliation-line").textContent = meta.affiliations.join(" · ");
+    setText("affiliation-line", meta.affiliations.join(" · "));
   }
-
-  const emailNode = document.getElementById("contact-email");
-  emailNode.textContent = meta.contact_email;
-  emailNode.setAttribute("href", `mailto:${meta.contact_email}`);
 }
 
 function safeSetLink(id, url) {
@@ -104,21 +106,21 @@ function safeSetLink(id, url) {
 
 function applyLinks(links) {
   safeSetLink("cta-paper", links.paper_url);
-  safeSetLink("cta-code", links.code_url);
-  safeSetLink("contact-code-link", links.code_url);
+  safeSetLink("cta-code-icon", links.code_url);
 }
 
 function setupCitationCopy() {
   const button = document.getElementById("copy-citation");
   const source = document.getElementById("citation-text");
   const status = document.getElementById("copy-status");
+  if (!button || !source || !status) return;
 
   button.addEventListener("click", async () => {
     const text = source.textContent || "";
     try {
       await navigator.clipboard.writeText(text);
       status.textContent = "BibTeX copied.";
-    } catch (err) {
+    } catch (_err) {
       status.textContent = "Copy failed. Please copy manually.";
     }
   });
@@ -148,20 +150,21 @@ function forceRevealAll() {
   }
 }
 
+async function fetchJson(path) {
+  const res = await fetch(path);
+  if (!res.ok) {
+    throw new Error(`HTTP ${res.status} for ${path}`);
+  }
+  return res.json();
+}
+
 async function boot() {
-  // Make core content visible even if later data fetch fails.
   setupRevealAnimation();
 
-  const [linksRes, metaRes, resultsRes] = await Promise.all([
-    fetch(DATA_FILES.links),
-    fetch(DATA_FILES.meta),
-    fetch(DATA_FILES.results)
-  ]);
-
   const [links, meta, results] = await Promise.all([
-    linksRes.json(),
-    metaRes.json(),
-    resultsRes.json()
+    fetchJson(DATA_FILES.links),
+    fetchJson(DATA_FILES.meta),
+    fetchJson(DATA_FILES.results)
   ]);
 
   applyMeta(meta);

@@ -9,16 +9,15 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/site.css">
+  <link rel="stylesheet" href="assets/css/site.css?v=1.5">
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to main content</a>
 
   <header class="topbar">
     <div class="container topbar-inner">
-      <p class="project-kicker" id="project-kicker">ICLR 2026</p>
       <nav class="topnav" aria-label="Primary">
-        <a href="#tldr">TL;DR</a>
+        <a href="#contributions">Key Contributions</a>
         <a href="#method">Method</a>
         <a href="#results">Results</a>
         <a href="#citation">Citation</a>
@@ -30,18 +29,18 @@
     <section class="hero reveal" aria-labelledby="hero-title">
       <div class="container hero-grid">
         <div>
-          <p class="paper-badge" id="paper-badge">ICLR 2026 Conference Paper</p>
-          <p class="hero-tag">Project Page</p>
+          <p class="paper-badge" id="paper-badge">🏆 Accepted to ICLR 2026</p>
           <h1 id="hero-title">RE-PO: Robust Enhanced Policy Optimization for LLM Alignment</h1>
           <p class="hero-subtitle" id="hero-tagline">
             Robust preference optimization under noisy labels with EM-based reliability weighting.
           </p>
-          <p class="hero-quant">
-            Conference publication at ICLR 2026.
-          </p>
           <div class="hero-cta" role="group" aria-label="Project links">
             <a id="cta-paper" class="btn btn-primary" href="assets/paper/iclr2026_conference.pdf" target="_blank" rel="noopener">Paper</a>
-            <a id="cta-code" class="btn btn-secondary" href="https://github.com/xycao/RE-PO/tree/main/re-po-open" target="_blank" rel="noopener">Code</a>
+            <a id="cta-code-icon" class="btn-icon" href="https://github.com/XiaoyangCao1113/RE-PO" target="_blank" rel="noopener" aria-label="Code repository" title="Code repository">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M12 2C6.48 2 2 6.59 2 12.24c0 4.52 2.87 8.35 6.84 9.71.5.1.68-.22.68-.49 0-.24-.01-1.04-.01-1.88-2.78.62-3.37-1.21-3.37-1.21-.45-1.18-1.11-1.49-1.11-1.49-.91-.64.07-.63.07-.63 1 .08 1.53 1.06 1.53 1.06.9 1.56 2.35 1.11 2.92.85.09-.67.35-1.11.63-1.37-2.22-.26-4.56-1.14-4.56-5.06 0-1.12.39-2.03 1.03-2.74-.1-.26-.45-1.31.1-2.74 0 0 .84-.28 2.75 1.05A9.31 9.31 0 0 1 12 6.84c.85 0 1.71.12 2.51.35 1.9-1.33 2.74-1.05 2.74-1.05.56 1.43.21 2.48.11 2.74.64.71 1.03 1.62 1.03 2.74 0 3.93-2.34 4.8-4.57 5.06.36.32.68.94.68 1.9 0 1.37-.01 2.47-.01 2.81 0 .27.18.59.69.49A10.26 10.26 0 0 0 22 12.24C22 6.59 17.52 2 12 2z"/>
+              </svg>
+            </a>
             <a id="cta-citation" class="btn btn-ghost" href="#citation">Citation</a>
           </div>
           <p class="author-line" id="author-line">
@@ -51,31 +50,26 @@
             Massachusetts Institute of Technology · Tsinghua University · Li Auto Inc.
           </p>
         </div>
-        <aside class="hero-aside" aria-label="Key facts">
-          <div class="fact-card">
-            <h2>Core Idea</h2>
-            <p>Infer preference-label correctness and annotator reliability, then reweight loss during policy optimization.</p>
-          </div>
-          <div class="fact-card">
-            <h2>Scope</h2>
-            <p>UltraFeedback and MultiPref experiments on Mistral-7B and Llama-3-8B.</p>
-          </div>
-          <div class="fact-card">
-            <h2>Target Metrics</h2>
-            <p>AlpacaEval 2 Length-Controlled Win Rate (LC) and Win Rate (WR).</p>
-          </div>
-        </aside>
       </div>
     </section>
 
-    <section id="tldr" class="section reveal" aria-labelledby="tldr-title">
+    <section id="contributions" class="section reveal" aria-labelledby="contributions-title">
       <div class="container">
-        <h2 id="tldr-title">TL;DR</h2>
-        <ul class="tldr-list">
-          <li><strong>Research Gap:</strong> Preference labels are often noisy, while many alignment methods assume uniform label reliability.</li>
-          <li><strong>Method:</strong> RE-PO uses an EM-style procedure to estimate label confidence and annotator reliability, then applies adaptive loss weighting.</li>
-          <li><strong>Performance:</strong> RE-PO improves AlpacaEval 2 LC/WR over DPO across UltraFeedback and MultiPref setups.</li>
-        </ul>
+        <h2 id="contributions-title">Key Contributions</h2>
+        <div class="contrib-grid">
+          <article class="contrib-card">
+            <h3>🔴 The Problem</h3>
+            <p>Preference labels in alignment data are often noisy and inconsistent, but many methods assume uniform reliability.</p>
+          </article>
+          <article class="contrib-card">
+            <h3>💡 Our Method (RE-PO)</h3>
+            <p>We introduce an EM-style reliability-aware weighting mechanism for adaptive loss reweighting during optimization.</p>
+          </article>
+          <article class="contrib-card">
+            <h3>🚀 Key Results</h3>
+            <p>Across Mistral-7B and Llama-3-8B, RE-PO improves AlpacaEval 2 LC and WR over DPO baselines.</p>
+          </article>
+        </div>
       </div>
     </section>
 
@@ -126,26 +120,19 @@
     </section>
 
     <section id="citation" class="section reveal" aria-labelledby="citation-title">
-      <div class="container citation-grid">
-        <div>
-          <h2 id="citation-title">Citation</h2>
-          <p>If RE-PO is useful to your research, please cite:</p>
-          <div class="citation-box">
-            <pre id="citation-text"><code>@inproceedings{cao2026repo,
+      <div class="container citation-single">
+        <h2 id="citation-title">Citation</h2>
+        <p>If RE-PO is useful to your research, please cite:</p>
+        <div class="citation-box">
+          <pre id="citation-text"><code>@inproceedings{cao2026repo,
   title     = {RE-PO: Robust Enhanced Policy Optimization as a General Framework for LLM Alignment},
   author    = {Cao, Xiaoyang and Xu, Zelai and Guang, Mo and Long, Kaiwen and Bakker, Michiel A. and Wang, Yu and Yu, Chao},
   booktitle = {International Conference on Learning Representations (ICLR)},
   year      = {2026}
 }</code></pre>
-            <button id="copy-citation" class="btn btn-secondary" type="button">Copy BibTeX</button>
-            <p id="copy-status" class="copy-status" aria-live="polite"></p>
-          </div>
+          <button id="copy-citation" class="btn btn-secondary" type="button">Copy BibTeX</button>
+          <p id="copy-status" class="copy-status" aria-live="polite"></p>
         </div>
-        <aside class="contact-card" aria-label="Contact and links">
-          <h3>Contact</h3>
-          <p>Email: <a id="contact-email" href="mailto:xycao@mit.edu">xycao@mit.edu</a></p>
-          <p><a id="contact-code-link" href="https://github.com/xycao/RE-PO/tree/main/re-po-open" target="_blank" rel="noopener">Code Repository</a></p>
-        </aside>
       </div>
     </section>
   </main>
@@ -157,6 +144,6 @@
     </div>
   </footer>
 
-  <script src="assets/js/site.js" defer></script>
+  <script src="assets/js/site.js?v=1.5" defer></script>
 </body>
 </html>

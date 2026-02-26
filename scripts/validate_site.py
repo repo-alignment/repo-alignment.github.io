@@ -56,12 +56,14 @@ def validate_json_contracts() -> None:
         if not isinstance(links[key], str) or not links[key].strip():
             fail(f"data/links.json {key} must be a non-empty string")
 
+    if links["code_url"] != "https://github.com/XiaoyangCao1113/RE-PO":
+        fail("data/links.json code_url must point to https://github.com/XiaoyangCao1113/RE-PO")
+
     required_meta = {
         "project_name",
         "tagline",
         "conference",
         "year",
-        "contact_email",
         "license",
         "paper_badge_text",
         "authors",
@@ -71,7 +73,7 @@ def validate_json_contracts() -> None:
         fail("data/site_meta.json keys mismatch")
     if not isinstance(meta["year"], int):
         fail("data/site_meta.json year must be an integer")
-    for field in ("project_name", "tagline", "conference", "contact_email", "license", "paper_badge_text"):
+    for field in ("project_name", "tagline", "conference", "license", "paper_badge_text"):
         if not isinstance(meta[field], str) or not meta[field].strip():
             fail(f"data/site_meta.json {field} must be a non-empty string")
     for field in ("authors", "affiliations"):
@@ -112,7 +114,8 @@ def validate_html_and_links() -> None:
             continue
         if ref == "":
             continue
-        local = (ROOT / ref).resolve()
+        local_ref = ref.split("?", 1)[0].split("#", 1)[0]
+        local = (ROOT / local_ref).resolve()
         if not local.exists():
             fail(f"broken local reference in index.html: {ref}")
 
@@ -120,30 +123,33 @@ def validate_html_and_links() -> None:
 def validate_content_contract() -> None:
     html = (ROOT / "index.html").read_text(encoding="utf-8")
 
-    required_nav = ["#tldr", "#method", "#results", "#citation"]
+    required_nav = ["#contributions", "#method", "#results", "#citation"]
     for anchor in required_nav:
         if f'href="{anchor}"' not in html:
             fail(f"missing nav anchor {anchor}")
 
     forbidden_tokens = [
-        'href="#preference-duel"',
-        'href="#resources"',
-        'id="preference-duel"',
-        'id="resources"',
-        "Preference Duel Cases",
-        "<h2 id=\"resources-title\">Resources</h2>",
+        'href="#tldr"',
+        'id="tldr"',
+        "Core Idea",
+        "Target Metrics",
+        "<h2>Scope</h2>",
+        "Contact",
+        "mailto:",
     ]
     for token in forbidden_tokens:
         if token in html:
             fail(f"forbidden content token found: {token}")
 
     required_snippets = [
-        "ICLR 2026 Conference Paper",
-        "<h2 id=\"results-title\">Key Results</h2>",
-        "<strong>Research Gap:</strong>",
-        "<strong>Method:</strong>",
-        "<strong>Performance:</strong>",
-        "<h2 id=\"citation-title\">Citation</h2>",
+        "Accepted to ICLR 2026",
+        '<h2 id="contributions-title">Key Contributions</h2>',
+        "🔴 The Problem",
+        "💡 Our Method (RE-PO)",
+        "🚀 Key Results",
+        '<h2 id="results-title">Key Results</h2>',
+        '<h2 id="citation-title">Citation</h2>',
+        'id="cta-code-icon"',
     ]
     for snippet in required_snippets:
         if snippet not in html:
