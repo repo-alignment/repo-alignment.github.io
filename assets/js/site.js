@@ -142,7 +142,16 @@ function setupRevealAnimation() {
   }
 }
 
+function forceRevealAll() {
+  for (const item of document.querySelectorAll(".reveal")) {
+    item.classList.add("is-visible");
+  }
+}
+
 async function boot() {
+  // Make core content visible even if later data fetch fails.
+  setupRevealAnimation();
+
   const [linksRes, metaRes, resultsRes] = await Promise.all([
     fetch(DATA_FILES.links),
     fetch(DATA_FILES.meta),
@@ -159,9 +168,9 @@ async function boot() {
   applyLinks(links);
   renderResults(normalizeRows(results));
   setupCitationCopy();
-  setupRevealAnimation();
 }
 
 boot().catch((err) => {
   console.error("Failed to initialize website:", err);
+  forceRevealAll();
 });
