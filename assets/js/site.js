@@ -106,7 +106,7 @@ function safeSetLink(id, url) {
 
 function applyLinks(links) {
   safeSetLink("cta-paper", links.paper_url);
-  safeSetLink("cta-code-icon", links.code_url);
+  safeSetLink("cta-code", links.code_url);
 }
 
 function setupCitationCopy() {

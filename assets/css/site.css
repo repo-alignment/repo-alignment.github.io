@@ -191,28 +191,17 @@ h1 {
   border-color: var(--line);
 }
 
-.btn-icon {
-  width: 44px;
-  height: 44px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
+.btn-with-icon {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  background: #fff;
-  transition: transform 150ms ease, box-shadow 150ms ease, background-color 150ms ease;
+  gap: 8px;
 }
 
-.btn-icon:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--shadow);
-  background: #f7faff;
-}
-
-.btn-icon svg {
-  width: 20px;
-  height: 20px;
-  fill: #0f172a;
+.btn-with-icon svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+  flex: 0 0 auto;
 }
 
 .section {
@@ -437,10 +426,6 @@ pre {
   .hero-cta {
     flex-direction: column;
     align-items: stretch;
-  }
-
-  .btn-icon {
-    width: 100%;
   }
 }
 

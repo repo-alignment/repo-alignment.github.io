@@ -7,7 +7,7 @@ Static GitHub Pages site for **RE-PO: Robust Enhanced Policy Optimization for LL
 - Conference-first hero with a single badge: **🏆 Accepted to ICLR 2026**.
 - Lean information architecture: `Hero`, `Key Contributions`, `Method`, `Results`, `Citation`.
 - Removed duplicated summary cards and removed the entire contact panel.
-- Code entry is icon-only in the hero and points to the real repository.
+- Paper/Code are icon+text CTA buttons in the hero and Code points to the real repository.
 - Added static asset versioning (`?v=1.5`) to reduce cache-related blank-page issues.
 
 ## Local Development

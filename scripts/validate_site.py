@@ -149,11 +149,14 @@ def validate_content_contract() -> None:
         "🚀 Key Results",
         '<h2 id="results-title">Key Results</h2>',
         '<h2 id="citation-title">Citation</h2>',
-        'id="cta-code-icon"',
+        'id="cta-code"',
     ]
     for snippet in required_snippets:
         if snippet not in html:
             fail(f"missing required content snippet: {snippet}")
+    if not all(label in html for label in (">Paper<", ">Code<", ">Citation<")):
+        fail("Hero section must expose Paper/Code/Citation text buttons")
+
 
 
 if __name__ == "__main__":
