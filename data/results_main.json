@@ -18,6 +18,60 @@
     "source": "paper_camera_ready"
   },
   {
+    "experiment_id": "mistral_ultra_ipo",
+    "dataset": "ultrafeedback",
+    "model": "mistral",
+    "method": "ipo",
+    "lc": 30.8,
+    "wr": 28.0,
+    "source": "paper_camera_ready"
+  },
+  {
+    "experiment_id": "mistral_ultra_re_ipo",
+    "dataset": "ultrafeedback",
+    "model": "mistral",
+    "method": "re_ipo",
+    "lc": 32.9,
+    "wr": 30.5,
+    "source": "paper_camera_ready"
+  },
+  {
+    "experiment_id": "mistral_ultra_simpo",
+    "dataset": "ultrafeedback",
+    "model": "mistral",
+    "method": "simpo",
+    "lc": 28.3,
+    "wr": 29.7,
+    "source": "paper_camera_ready"
+  },
+  {
+    "experiment_id": "mistral_ultra_re_simpo",
+    "dataset": "ultrafeedback",
+    "model": "mistral",
+    "method": "re_simpo",
+    "lc": 30.4,
+    "wr": 32.9,
+    "source": "paper_camera_ready"
+  },
+  {
+    "experiment_id": "mistral_ultra_cpo",
+    "dataset": "ultrafeedback",
+    "model": "mistral",
+    "method": "cpo",
+    "lc": 26.3,
+    "wr": 26.4,
+    "source": "paper_camera_ready"
+  },
+  {
+    "experiment_id": "mistral_ultra_re_cpo",
+    "dataset": "ultrafeedback",
+    "model": "mistral",
+    "method": "re_cpo",
+    "lc": 27.6,
+    "wr": 27.8,
+    "source": "paper_camera_ready"
+  },
+  {
     "experiment_id": "llama_ultra_dpo",
     "dataset": "ultrafeedback",
     "model": "llama",
@@ -33,6 +87,60 @@
     "method": "re_dpo",
     "lc": 44.1,
     "wr": 46.2,
+    "source": "paper_camera_ready"
+  },
+  {
+    "experiment_id": "llama_ultra_ipo",
+    "dataset": "ultrafeedback",
+    "model": "llama",
+    "method": "ipo",
+    "lc": 43.6,
+    "wr": 41.6,
+    "source": "paper_camera_ready"
+  },
+  {
+    "experiment_id": "llama_ultra_re_ipo",
+    "dataset": "ultrafeedback",
+    "model": "llama",
+    "method": "re_ipo",
+    "lc": 48.3,
+    "wr": 48.6,
+    "source": "paper_camera_ready"
+  },
+  {
+    "experiment_id": "llama_ultra_simpo",
+    "dataset": "ultrafeedback",
+    "model": "llama",
+    "method": "simpo",
+    "lc": 44.5,
+    "wr": 37.1,
+    "source": "paper_camera_ready"
+  },
+  {
+    "experiment_id": "llama_ultra_re_simpo",
+    "dataset": "ultrafeedback",
+    "model": "llama",
+    "method": "re_simpo",
+    "lc": 46.9,
+    "wr": 39.4,
+    "source": "paper_camera_ready"
+  },
+  {
+    "experiment_id": "llama_ultra_cpo",
+    "dataset": "ultrafeedback",
+    "model": "llama",
+    "method": "cpo",
+    "lc": 35.9,
+    "wr": 40.3,
+    "source": "paper_camera_ready"
+  },
+  {
+    "experiment_id": "llama_ultra_re_cpo",
+    "dataset": "ultrafeedback",
+    "model": "llama",
+    "method": "re_cpo",
+    "lc": 40.1,
+    "wr": 43.8,
     "source": "paper_camera_ready"
   },
   {

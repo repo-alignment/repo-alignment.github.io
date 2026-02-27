@@ -1,14 +1,16 @@
-# RE-PO Project Website (v1.5)
+# RE-PO Project Website (v1.6)
 
 Static GitHub Pages site for **RE-PO: Robust Enhanced Policy Optimization for LLM Alignment**.
 
-## v1.5 Highlights
+## v1.6 Highlights
 
 - Conference-first hero with a single badge: **🏆 Accepted to ICLR 2026**.
 - Lean information architecture: `Hero`, `Key Contributions`, `Method`, `Results`, `Citation`.
 - Removed duplicated summary cards and removed the entire contact panel.
-- Paper/Code are icon+text CTA buttons in the hero and Code points to the real repository.
-- Added static asset versioning (`?v=1.5`) to reduce cache-related blank-page issues.
+- Paper/Code are icon+text CTA buttons in the hero; Paper points to arXiv and Code points to the real repository.
+- Results expanded to four method families (`DPO/IPO/SimPO/CPO`) using `Standard` vs `RE-PO` comparisons.
+- Added two static reliability figures in `Results` (`one_annotator_eta.png`, `two_annotators_eta.png`).
+- Added static asset versioning (`?v=1.6`) to reduce cache-related blank-page issues.
 
 ## Local Development
 
@@ -26,14 +28,14 @@ python -m http.server 8000
 - `experiment_id` (string)
 - `dataset` (`ultrafeedback|multipref`)
 - `model` (`mistral|llama`)
-- `method` (`dpo|re_dpo`)
+- `method` (`dpo|re_dpo|ipo|re_ipo|simpo|re_simpo|cpo|re_cpo`)
 - `lc` (number)
 - `wr` (number)
 - `source` (`paper_camera_ready`)
 
 ### `data/links.json`
 
-- `paper_url`
+- `paper_url` (must be `https://arxiv.org/abs/2509.24159`)
 - `code_url` (must be `https://github.com/XiaoyangCao1113/RE-PO`)
 
 ### `data/site_meta.json`

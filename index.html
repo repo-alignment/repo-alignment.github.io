@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/site.css?v=1.5.1">
+  <link rel="stylesheet" href="assets/css/site.css?v=1.6">
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to main content</a>
@@ -35,7 +35,7 @@
             Robust preference optimization under noisy labels with EM-based reliability weighting.
           </p>
           <div class="hero-cta" role="group" aria-label="Project links">
-            <a id="cta-paper" class="btn btn-primary btn-with-icon" href="assets/paper/iclr2026_conference.pdf" target="_blank" rel="noopener">
+            <a id="cta-paper" class="btn btn-primary btn-with-icon" href="https://arxiv.org/abs/2509.24159" target="_blank" rel="noopener">
               <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                 <path d="M6 2h8l4 4v16H6V2zm8 1.5V7h3.5L14 3.5zM8 10h8v1.5H8V10zm0 3h8v1.5H8V13zm0 3h6v1.5H8V16z"/>
               </svg>
@@ -105,7 +105,7 @@
       <div class="container">
         <h2 id="results-title">Key Results</h2>
         <p class="section-lead">
-          On UltraFeedback and MultiPref, RE-DPO improves LC and WR over DPO for both Mistral-7B and Llama-3-8B.
+          Across DPO, IPO, SimPO, and CPO families, RE-PO generally improves LC and WR on UltraFeedback, and RE-DPO remains stronger than DPO on MultiPref.
         </p>
         <div class="table-wrap" role="region" aria-label="Main results" tabindex="0">
           <table id="results-table">
@@ -113,14 +113,31 @@
               <tr>
                 <th>Dataset</th>
                 <th>Model</th>
-                <th>DPO (LC/WR)</th>
-                <th>RE-DPO (LC/WR)</th>
+                <th>Method</th>
+                <th>Standard (LC/WR)</th>
+                <th>RE-PO (LC/WR)</th>
                 <th>Delta LC</th>
                 <th>Delta WR</th>
               </tr>
             </thead>
             <tbody id="results-body"></tbody>
           </table>
+        </div>
+        <div class="results-visuals" aria-labelledby="noise-robustness-title">
+          <h3 id="noise-robustness-title">Noise Robustness</h3>
+          <p class="section-lead">
+            RE-PO estimated reliabilities track ground-truth trends under synthetic noise in both single-annotator and two-annotator settings.
+          </p>
+          <div class="noise-grid">
+            <figure class="figure-card">
+              <img src="assets/img/one_annotator_eta.png" alt="Single-annotator reliability under varying synthetic noise: RE-PO estimate tracks ground-truth reliability.">
+              <figcaption>Single annotator: estimated reliability follows the injected-noise trajectory.</figcaption>
+            </figure>
+            <figure class="figure-card">
+              <img src="assets/img/two_annotators_eta.png" alt="Two-annotator reliability under synthetic noise: RE-PO estimate tracks one stable and one degrading annotator.">
+              <figcaption>Two annotators: RE-PO separates a stable annotator from a progressively noisy annotator.</figcaption>
+            </figure>
+          </div>
         </div>
       </div>
     </section>
@@ -150,6 +167,6 @@
     </div>
   </footer>
 
-  <script src="assets/js/site.js?v=1.5.1" defer></script>
+  <script src="assets/js/site.js?v=1.6" defer></script>
 </body>
 </html>

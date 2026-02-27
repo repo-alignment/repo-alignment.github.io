@@ -14,6 +14,26 @@ const MODEL_LABEL = {
   llama: "Llama-3-8B-Instruct"
 };
 
+const METHOD_LABEL = {
+  dpo: "DPO",
+  ipo: "IPO",
+  simpo: "SimPO",
+  cpo: "CPO"
+};
+
+const RESULTS_ORDER = [
+  { dataset: "ultrafeedback", model: "mistral", family: "dpo" },
+  { dataset: "ultrafeedback", model: "mistral", family: "ipo" },
+  { dataset: "ultrafeedback", model: "mistral", family: "simpo" },
+  { dataset: "ultrafeedback", model: "mistral", family: "cpo" },
+  { dataset: "ultrafeedback", model: "llama", family: "dpo" },
+  { dataset: "ultrafeedback", model: "llama", family: "ipo" },
+  { dataset: "ultrafeedback", model: "llama", family: "simpo" },
+  { dataset: "ultrafeedback", model: "llama", family: "cpo" },
+  { dataset: "multipref", model: "mistral", family: "dpo" },
+  { dataset: "multipref", model: "llama", family: "dpo" }
+];
+
 function formatSigned(value) {
   const sign = value >= 0 ? "+" : "";
   return `${sign}${value.toFixed(1)}`;
@@ -25,27 +45,51 @@ function setText(id, value) {
   node.textContent = String(value);
 }
 
+function getMethodFamily(method) {
+  return method.startsWith("re_") ? method.slice(3) : method;
+}
+
+function isRepoMethod(method) {
+  return method.startsWith("re_");
+}
+
 function normalizeRows(entries) {
   const grouped = new Map();
 
   for (const item of entries) {
-    const key = `${item.dataset}::${item.model}`;
+    const family = getMethodFamily(item.method);
+    const key = `${item.dataset}::${item.model}::${family}`;
+
     if (!grouped.has(key)) {
-      grouped.set(key, { dataset: item.dataset, model: item.model, dpo: null, re_dpo: null });
+      grouped.set(key, {
+        dataset: item.dataset,
+        model: item.model,
+        methodFamily: family,
+        standard: null,
+        repo: null
+      });
     }
-    grouped.get(key)[item.method] = item;
+
+    const row = grouped.get(key);
+    if (isRepoMethod(item.method)) {
+      row.repo = item;
+    } else {
+      row.standard = item;
+    }
   }
 
-  const order = [
-    ["ultrafeedback", "mistral"],
-    ["ultrafeedback", "llama"],
-    ["multipref", "mistral"],
-    ["multipref", "llama"]
-  ];
+  const orderedKeys = RESULTS_ORDER.map((item) => `${item.dataset}::${item.model}::${item.family}`);
+  const rows = [];
 
-  return order
-    .map(([dataset, model]) => grouped.get(`${dataset}::${model}`))
-    .filter(Boolean);
+  for (const key of orderedKeys) {
+    if (grouped.has(key)) rows.push(grouped.get(key));
+  }
+
+  for (const [key, value] of grouped.entries()) {
+    if (!orderedKeys.includes(key)) rows.push(value);
+  }
+
+  return rows;
 }
 
 function renderResults(rows) {
@@ -54,17 +98,18 @@ function renderResults(rows) {
   tbody.innerHTML = "";
 
   for (const row of rows) {
-    if (!row.dpo || !row.re_dpo) continue;
+    if (!row.standard || !row.repo) continue;
 
-    const deltaLc = row.re_dpo.lc - row.dpo.lc;
-    const deltaWr = row.re_dpo.wr - row.dpo.wr;
+    const deltaLc = row.repo.lc - row.standard.lc;
+    const deltaWr = row.repo.wr - row.standard.wr;
 
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td>${DATASET_LABEL[row.dataset] || row.dataset}</td>
       <td>${MODEL_LABEL[row.model] || row.model}</td>
-      <td>${row.dpo.lc.toFixed(1)} / ${row.dpo.wr.toFixed(1)}</td>
-      <td>${row.re_dpo.lc.toFixed(1)} / ${row.re_dpo.wr.toFixed(1)}</td>
+      <td>${METHOD_LABEL[row.methodFamily] || row.methodFamily.toUpperCase()}</td>
+      <td>${row.standard.lc.toFixed(1)} / ${row.standard.wr.toFixed(1)}</td>
+      <td>${row.repo.lc.toFixed(1)} / ${row.repo.wr.toFixed(1)}</td>
       <td class="${deltaLc >= 0 ? "delta-pos" : "delta-neg"}">${formatSigned(deltaLc)}</td>
       <td class="${deltaWr >= 0 ? "delta-pos" : "delta-neg"}">${formatSigned(deltaWr)}</td>
     `;

@@ -27,7 +27,7 @@ def validate_results_contract(results) -> None:
     required_result_keys = {"experiment_id", "dataset", "model", "method", "lc", "wr", "source"}
     valid_datasets = {"ultrafeedback", "multipref"}
     valid_models = {"mistral", "llama"}
-    valid_methods = {"dpo", "re_dpo"}
+    valid_methods = {"dpo", "re_dpo", "ipo", "re_ipo", "simpo", "re_simpo", "cpo", "re_cpo"}
 
     for idx, item in enumerate(results):
         if set(item.keys()) != required_result_keys:
@@ -58,6 +58,8 @@ def validate_json_contracts() -> None:
 
     if links["code_url"] != "https://github.com/XiaoyangCao1113/RE-PO":
         fail("data/links.json code_url must point to https://github.com/XiaoyangCao1113/RE-PO")
+    if links["paper_url"] != "https://arxiv.org/abs/2509.24159":
+        fail("data/links.json paper_url must point to https://arxiv.org/abs/2509.24159")
 
     required_meta = {
         "project_name",
@@ -148,6 +150,10 @@ def validate_content_contract() -> None:
         "💡 Our Method (RE-PO)",
         "🚀 Key Results",
         '<h2 id="results-title">Key Results</h2>',
+        "DPO, IPO, SimPO, and CPO",
+        '<h3 id="noise-robustness-title">Noise Robustness</h3>',
+        "one_annotator_eta.png",
+        "two_annotators_eta.png",
         '<h2 id="citation-title">Citation</h2>',
         'id="cta-code"',
     ]
